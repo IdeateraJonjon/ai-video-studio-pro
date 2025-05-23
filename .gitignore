@@ -65,6 +65,12 @@ config.local.json
 .env
 .env.local
 
+# GitHub credentials and tokens (SECURITY)
+github_auto_create.py
+*token*
+*credential*
+*secret*
+
 # Distribution files
 dist/
 *.zip
