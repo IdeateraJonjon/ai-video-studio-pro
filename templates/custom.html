@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Video Creator - AI Video Studio</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        
+        .navbar {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        
+        .navbar .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .creator-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        .creator-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        
+        .prompt-textarea {
+            height: 150px !important;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .tags-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            min-height: 40px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .tag {
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .tag-remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .tag-input {
+            border: none;
+            outline: none;
+            flex: 1;
+            min-width: 100px;
+            font-size: 14px;
+        }
+        
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .preset-btn {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+        
+        .preset-btn:hover {
+            background: #f0f0f0;
+            transform: translateY(-1px);
+        }
+        
+        .preset-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .advanced-settings {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40,167,69,0.4);
+        }
+        
+        .preview-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .preview-area {
+            background: #f8f9fa;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .prompt-preview {
+            background: #1a1a1a;
+            color: #00ff00;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        .settings-preview {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 0.9em;
+        }
+        
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .gallery-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .gallery-thumbnail {
+            width: 100%;
+            height: 120px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+        
+        .prompt-suggestions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .suggestion-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #856404;
+        }
+        
+        .suggestion-item {
+            cursor: pointer;
+            padding: 5px 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .suggestion-item:hover {
+            background: #667eea;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">AI Video Studio</div>
+            <div class="nav-links">
+                <a href="/">Dashboard</a>
+                <a href="/models">Models</a>
+                <a href="/system">System</a>
+                <a href="/custom" class="active">Custom</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Custom Video Creator</h1>
+            <p>Create unique videos with your own prompts and settings</p>
+        </div>
+
+        <div class="creator-grid">
+            <div class="creator-panel">
+                <h3 style="margin-bottom: 20px;">Video Configuration</h3>
+                
+                <div class="prompt-suggestions">
+                    <div class="suggestion-title">💡 Prompt Ideas</div>
+                    <div class="suggestion-item" onclick="usePrompt('Majestic mountain landscape at sunset, cinematic aerial view, golden hour lighting')">
+                        🏔️ Mountain Landscape
+                    </div>
+                    <div class="suggestion-item" onclick="usePrompt('Bustling city street with neon lights, cyberpunk aesthetic, rain-soaked pavement')">
+                        🌃 Cyberpunk City
+                    </div>
+                    <div class="suggestion-item" onclick="usePrompt('Underwater coral reef teeming with colorful fish, marine life documentary style')">
+                        🐠 Underwater World
+                    </div>
+                    <div class="suggestion-item" onclick="usePrompt('Time-lapse of blooming flowers in a meadow, nature documentary, macro photography')">
+                        🌸 Blooming Flowers
+                    </div>
+                    <div class="suggestion-item" onclick="usePrompt('Spaceship flying through asteroid field, sci-fi movie style, dramatic lighting')">
+                        🚀 Space Adventure
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Video Title</label>
+                    <input type="text" id="videoTitle" placeholder="Enter a descriptive title for your video">
+                </div>
+                
+                <div class="form-group">
+                    <label>Prompt Description</label>
+                    <textarea id="videoPrompt" class="prompt-textarea" placeholder="Describe the video you want to create. Be specific about style, lighting, camera angles, and mood. Example: 'Cinematic aerial shot of pristine ocean at sunset, crystal clear waters, gentle waves, documentary style'"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Style Presets</label>
+                    <div class="preset-buttons">
+                        <div class="preset-btn" onclick="selectPreset('cinematic')">🎬 Cinematic</div>
+                        <div class="preset-btn" onclick="selectPreset('documentary')">📽️ Documentary</div>
+                        <div class="preset-btn" onclick="selectPreset('artistic')">🎨 Artistic</div>
+                        <div class="preset-btn" onclick="selectPreset('realistic')">📷 Realistic</div>
+                        <div class="preset-btn" onclick="selectPreset('fantasy')">✨ Fantasy</div>
+                        <div class="preset-btn" onclick="selectPreset('retro')">📺 Retro</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tags</label>
+                    <div class="tags-input" id="tagsContainer">
+                        <input type="text" class="tag-input" id="tagInput" placeholder="Add tags..." onkeypress="addTag(event)">
+                    </div>
+                </div>
+                
+                <div class="advanced-settings">
+                    <h4 style="margin-bottom: 15px;">Advanced Settings</h4>
+                    <div class="settings-grid">
+                        <div class="form-group">
+                            <label>Resolution</label>
+                            <select id="resolution">
+                                <option value="512x512">512x512 (Fast)</option>
+                                <option value="768x768">768x768 (Balanced)</option>
+                                <option value="1024x1024">1024x1024 (High)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Duration (sec)</label>
+                            <input type="number" id="duration" value="6" min="3" max="30">
+                        </div>
+                        <div class="form-group">
+                            <label>FPS</label>
+                            <select id="fps">
+                                <option value="8">8 FPS</option>
+                                <option value="16">16 FPS</option>
+                                <option value="24">24 FPS</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Quality Steps</label>
+                            <input type="number" id="steps" value="25" min="10" max="50">
+                        </div>
+                        <div class="form-group">
+                            <label>Guidance Scale</label>
+                            <input type="number" id="guidance" value="7.5" min="1" max="20" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label>Seed (optional)</label>
+                            <input type="number" id="seed" placeholder="Random if empty">
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="generate-btn" onclick="generateCustomVideo()">
+                    🎥 Generate Custom Video
+                </button>
+            </div>
+            
+            <div class="preview-panel">
+                <h3 style="margin-bottom: 20px;">Live Preview</h3>
+                
+                <div class="preview-area" id="previewArea">
+                    Video preview will appear here
+                </div>
+                
+                <div class="prompt-preview" id="promptPreview">
+                    > Your prompt will appear here as you type...
+                </div>
+                
+                <div class="settings-preview">
+                    <strong>Current Settings:</strong>
+                    <div class="setting-row">
+                        <span>Resolution:</span>
+                        <span id="previewResolution">512x512</span>
+                    </div>
+                    <div class="setting-row">
+                        <span>Duration:</span>
+                        <span id="previewDuration">6 seconds</span>
+                    </div>
+                    <div class="setting-row">
+                        <span>FPS:</span>
+                        <span id="previewFPS">8</span>
+                    </div>
+                    <div class="setting-row">
+                        <span>Quality:</span>
+                        <span id="previewSteps">25 steps</span>
+                    </div>
+                    <div class="setting-row">
+                        <span>Estimated Time:</span>
+                        <span id="estimatedTime">15-30 minutes</span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h4>Generation Queue</h4>
+                    <div id="customQueue" style="background: #f8f9fa; border-radius: 8px; padding: 15px; min-height: 50px;">
+                        No custom videos in queue
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="gallery" id="customGallery">
+            <h3 style="grid-column: 1/-1; margin-bottom: 20px;">Your Custom Creations</h3>
+            <div class="gallery-item">
+                <div class="gallery-thumbnail">No custom videos yet</div>
+                <div>Create your first custom video above!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTags = [];
+        let selectedPreset = null;
+        
+        function usePrompt(prompt) {
+            document.getElementById('videoPrompt').value = prompt;
+            updatePreview();
+        }
+        
+        function selectPreset(preset) {
+            // Remove active class from all presets
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to selected preset
+            event.target.classList.add('active');
+            selectedPreset = preset;
+            
+            // Modify prompt based on preset
+            const currentPrompt = document.getElementById('videoPrompt').value;
+            let styleAddition = '';
+            
+            switch(preset) {
+                case 'cinematic':
+                    styleAddition = ', cinematic lighting, dramatic composition, film grain';
+                    break;
+                case 'documentary':
+                    styleAddition = ', documentary style, natural lighting, realistic';
+                    break;
+                case 'artistic':
+                    styleAddition = ', artistic composition, creative lighting, abstract elements';
+                    break;
+                case 'realistic':
+                    styleAddition = ', photorealistic, natural colors, high detail';
+                    break;
+                case 'fantasy':
+                    styleAddition = ', magical atmosphere, fantasy elements, ethereal lighting';
+                    break;
+                case 'retro':
+                    styleAddition = ', vintage aesthetic, retro colors, nostalgic feel';
+                    break;
+            }
+            
+            if (currentPrompt && !currentPrompt.includes(styleAddition)) {
+                document.getElementById('videoPrompt').value = currentPrompt + styleAddition;
+            }
+            
+            updatePreview();
+        }
+        
+        function addTag(event) {
+            if (event.key === 'Enter') {
+                const input = event.target;
+                const tag = input.value.trim();
+                
+                if (tag && !currentTags.includes(tag)) {
+                    currentTags.push(tag);
+                    input.value = '';
+                    updateTagsDisplay();
+                }
+            }
+        }
+        
+        function removeTag(tag) {
+            currentTags = currentTags.filter(t => t !== tag);
+            updateTagsDisplay();
+        }
+        
+        function updateTagsDisplay() {
+            const container = document.getElementById('tagsContainer');
+            const input = container.querySelector('.tag-input');
+            
+            // Remove existing tags
+            container.querySelectorAll('.tag').forEach(tag => tag.remove());
+            
+            // Add current tags
+            currentTags.forEach(tag => {
+                const tagElement = document.createElement('div');
+                tagElement.className = 'tag';
+                tagElement.innerHTML = `${tag} <span class="tag-remove" onclick="removeTag('${tag}')">×</span>`;
+                container.insertBefore(tagElement, input);
+            });
+        }
+        
+        function updatePreview() {
+            const prompt = document.getElementById('videoPrompt').value;
+            const resolution = document.getElementById('resolution').value;
+            const duration = document.getElementById('duration').value;
+            const fps = document.getElementById('fps').value;
+            const steps = document.getElementById('steps').value;
+            
+            // Update prompt preview
+            document.getElementById('promptPreview').textContent = prompt || '> Your prompt will appear here as you type...';
+            
+            // Update settings preview
+            document.getElementById('previewResolution').textContent = resolution;
+            document.getElementById('previewDuration').textContent = duration + ' seconds';
+            document.getElementById('previewFPS').textContent = fps;
+            document.getElementById('previewSteps').textContent = steps + ' steps';
+            
+            // Calculate estimated time
+            const baseTime = parseInt(duration) * 2; // 2 minutes per second of video
+            const qualityMultiplier = parseInt(steps) / 25; // Base 25 steps
+            const resolutionMultiplier = resolution === '1024x1024' ? 2 : resolution === '768x768' ? 1.5 : 1;
+            
+            const estimatedMinutes = Math.round(baseTime * qualityMultiplier * resolutionMultiplier);
+            document.getElementById('estimatedTime').textContent = `${estimatedMinutes}-${estimatedMinutes + 15} minutes`;
+        }
+        
+        function generateCustomVideo() {
+            const title = document.getElementById('videoTitle').value;
+            const prompt = document.getElementById('videoPrompt').value;
+            
+            if (!title || !prompt) {
+                alert('Please enter both a title and prompt for your video.');
+                return;
+            }
+            
+            const customScene = {
+                title: title,
+                prompt: prompt,
+                tags: currentTags,
+                preset: selectedPreset,
+                settings: {
+                    resolution: document.getElementById('resolution').value,
+                    duration: parseInt(document.getElementById('duration').value),
+                    fps: parseInt(document.getElementById('fps').value),
+                    steps: parseInt(document.getElementById('steps').value),
+                    guidance: parseFloat(document.getElementById('guidance').value),
+                    seed: document.getElementById('seed').value || null
+                },
+                custom: true
+            };
+            
+            fetch('/api/create_custom_scene', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(customScene)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Custom scene created! Starting generation...');
+                
+                // Add to generation queue
+                return fetch('/api/generate_scene', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data.scene)
+                });
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateQueue();
+            })
+            .catch(error => {
+                alert('Error creating custom video: ' + error.message);
+            });
+        }
+        
+        function updateQueue() {
+            fetch('/api/status')
+            .then(response => response.json())
+            .then(status => {
+                const queueContainer = document.getElementById('customQueue');
+                const customQueue = status.generation.queue.filter(item => item.custom);
+                
+                if (customQueue.length === 0) {
+                    queueContainer.innerHTML = 'No custom videos in queue';
+                } else {
+                    queueContainer.innerHTML = customQueue.map(item => 
+                        `<div style="margin-bottom: 10px; padding: 8px; background: white; border-radius: 5px;">
+                            <strong>${item.title}</strong><br>
+                            <small>${item.prompt.substring(0, 50)}...</small>
+                        </div>`
+                    ).join('');
+                }
+            });
+        }
+        
+        // Add event listeners for real-time preview updates
+        document.getElementById('videoPrompt').addEventListener('input', updatePreview);
+        document.getElementById('resolution').addEventListener('change', updatePreview);
+        document.getElementById('duration').addEventListener('input', updatePreview);
+        document.getElementById('fps').addEventListener('change', updatePreview);
+        document.getElementById('steps').addEventListener('input', updatePreview);
+        
+        // Initial preview update
+        updatePreview();
+        
+        // Update queue periodically
+        setInterval(updateQueue, 5000);
+    </script>
+</body>
+</html>

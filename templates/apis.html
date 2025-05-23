@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Configuration - AI Video Studio Pro</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        
+        .navbar {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        
+        .navbar .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .api-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+        }
+        
+        .api-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .api-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .status-active { background: #28a745; }
+        .status-inactive { background: #dc3545; }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">🎬 AI Video Studio Pro</div>
+            <div class="nav-links">
+                <a href="/">📊 Dashboard</a>
+                <a href="/projects">📁 Projects</a>
+                <a href="/apis" class="active">🔗 APIs</a>
+                <a href="/github-config">🐙 GitHub</a>
+                <a href="/system">⚙️ System</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>API Configuration</h1>
+            <p>Configure external video generation APIs</p>
+        </div>
+        
+        <div class="api-grid">
+            <div class="api-card">
+                <div class="api-header">
+                    <h3>🌊 HailuoAI</h3>
+                    <span class="status-indicator status-inactive"></span>
+                </div>
+                <p>Configure your HailuoAI subscription for high-quality video generation.</p>
+                <div class="form-group">
+                    <label>API Key:</label>
+                    <input type="password" id="hailuoaiKey" placeholder="Enter your HailuoAI API key">
+                </div>
+                <button class="btn btn-primary" onclick="configureAPI('hailuoai')">
+                    Configure HailuoAI
+                </button>
+            </div>
+            
+            <div class="api-card">
+                <div class="api-header">
+                    <h3>🚀 Veo 2</h3>
+                    <span class="status-indicator status-inactive"></span>
+                </div>
+                <p>Connect to Google's Veo 2 API for advanced video generation.</p>
+                <div class="form-group">
+                    <label>API Key:</label>
+                    <input type="password" id="veo2Key" placeholder="Enter your Veo 2 API key">
+                </div>
+                <button class="btn btn-primary" onclick="configureAPI('veo2')">
+                    Configure Veo 2
+                </button>
+            </div>
+            
+            <div class="api-card">
+                <div class="api-header">
+                    <h3>💻 Local Generation</h3>
+                    <span class="status-indicator status-active"></span>
+                </div>
+                <p>Use local AI models for video generation. Always available.</p>
+                <button class="btn btn-success" disabled>
+                    Always Active
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function configureAPI(provider) {
+            const apiKey = document.getElementById(provider + 'Key').value;
+            
+            if (!apiKey) {
+                alert('Please enter an API key');
+                return;
+            }
+            
+            fetch('/api/configure_api', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    provider: provider,
+                    api_key: apiKey
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

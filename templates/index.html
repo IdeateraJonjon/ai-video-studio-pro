@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌊 Ocean Pollution Video Generator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .controls {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .generate-all-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .generate-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,107,107,0.4);
+        }
+        
+        .status-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #28a745, #20c997);
+            height: 100%;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        
+        .scenes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .scene-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .scene-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .scene-number {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .scene-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .scene-description {
+            color: #6c757d;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .scene-prompt {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.9em;
+            color: #495057;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(40,167,69,0.3);
+        }
+        
+        .generate-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .completed-videos {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .video-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .video-item:last-child { border-bottom: none; }
+        
+        .download-btn {
+            background: #007bff;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌊 Ocean Pollution Video Generator</h1>
+            <p>Create powerful environmental documentaries with AI</p>
+        </div>
+        
+        <div class="controls">
+            <button class="generate-all-btn" onclick="generateAll()">
+                🎬 Generate All 9 Scenes (60 minutes estimated)
+            </button>
+            
+            <div class="status-panel" id="statusPanel" style="display: none;">
+                <div id="statusMessage">Ready to generate</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div id="sceneProgress">Scene 0 of 9</div>
+            </div>
+        </div>
+        
+        <div class="scenes-grid">
+            {% for scene in scenes %}
+            <div class="scene-card">
+                <div class="scene-number">{{ scene.id }}</div>
+                <div class="scene-title">{{ scene.title }}</div>
+                <div class="scene-description">{{ scene.description }}</div>
+                <div class="scene-prompt">{{ scene.prompt }}</div>
+                <button class="generate-btn" onclick="generateScene({{ scene.id }})">
+                    Generate This Scene
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="completed-videos" id="completedVideos" style="display: none;">
+            <h3>✅ Completed Videos</h3>
+            <div id="videoList"></div>
+        </div>
+    </div>
+
+    <script>
+        let statusInterval;
+        
+        function generateScene(sceneId) {
+            fetch('/generate_scene', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ scene_id: sceneId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                startStatusUpdates();
+            });
+        }
+        
+        function generateAll() {
+            if (confirm('This will generate all 9 scenes and may take 1-3 hours. Continue?')) {
+                fetch('/generate_all', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    startStatusUpdates();
+                });
+            }
+        }
+        
+        function startStatusUpdates() {
+            document.getElementById('statusPanel').style.display = 'block';
+            
+            statusInterval = setInterval(updateStatus, 2000);
+        }
+        
+        function updateStatus() {
+            fetch('/status')
+            .then(response => response.json())
+            .then(status => {
+                document.getElementById('statusMessage').textContent = status.message;
+                document.getElementById('progressFill').style.width = status.progress + '%';
+                document.getElementById('sceneProgress').textContent = 
+                    `Scene ${status.current_scene} of ${status.total_scenes}`;
+                
+                if (status.completed_videos.length > 0) {
+                    showCompletedVideos(status.completed_videos);
+                }
+                
+                if (!status.running) {
+                    clearInterval(statusInterval);
+                    document.getElementById('progressFill').style.width = '100%';
+                }
+            });
+        }
+        
+        function showCompletedVideos(videos) {
+            const container = document.getElementById('completedVideos');
+            const list = document.getElementById('videoList');
+            
+            list.innerHTML = '';
+            videos.forEach(video => {
+                const item = document.createElement('div');
+                item.className = 'video-item';
+                item.innerHTML = `
+                    <span>${video.scene}</span>
+                    <a href="${video.path}" class="download-btn" download>Download</a>
+                `;
+                list.appendChild(item);
+            });
+            
+            container.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

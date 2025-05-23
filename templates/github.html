@@ -1,0 +1,95 @@
+        </div>
+        
+        <div class="github-panel">
+            {% if app_state.github.configured %}
+            <div class="status-panel status-connected">
+                <h3>✅ GitHub Connected</h3>
+                <p>Connected as: <strong>{{ app_state.github.username }}</strong></p>
+                <p>Your videos can now be automatically uploaded to GitHub repositories!</p>
+            </div>
+            {% else %}
+            <div class="status-panel">
+                <h3>🔗 Connect GitHub Account</h3>
+                <p>Configure GitHub integration to automatically share your generated videos</p>
+            </div>
+            {% endif %}
+            
+            <h3 style="margin-bottom: 20px;">GitHub Configuration</h3>
+            
+            <div class="form-group">
+                <label>GitHub Username:</label>
+                <input type="text" id="githubUsername" placeholder="Enter your GitHub username" 
+                       value="{{ app_state.github.username or '' }}">
+                <div class="help-text">Your GitHub username (e.g., if your profile is github.com/john, enter "john")</div>
+            </div>
+            
+            <div class="form-group">
+                <label>Personal Access Token:</label>
+                <input type="password" id="githubToken" placeholder="Enter your GitHub Personal Access Token">
+                <div class="help-text">
+                    <strong>How to create a token:</strong><br>
+                    1. Go to GitHub → Settings → Developer settings → Personal access tokens<br>
+                    2. Click "Generate new token (classic)"<br>
+                    3. Select scopes: <code>repo</code>, <code>user</code><br>
+                    4. Copy the generated token
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="configureGitHub()">
+                🔗 {{ 'Update' if app_state.github.configured else 'Connect' }} GitHub Integration
+            </button>
+            
+            {% if app_state.github.configured %}
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+                <h4>📤 Auto-Upload Features</h4>
+                <ul style="margin: 15px 0; padding-left: 20px;">
+                    <li>✅ Automatic repository creation for each project</li>
+                    <li>✅ Video files uploaded to dedicated folders</li>
+                    <li>✅ Auto-generated README files</li>
+                    <li>✅ Public sharing links</li>
+                    <li>✅ Project organization</li>
+                </ul>
+                
+                <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <strong>💡 Pro Tip:</strong> Your videos will be uploaded to repositories named 
+                    <code>ai-videos-[project-name]</code> and will be publicly accessible for sharing!
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function configureGitHub() {
+            const username = document.getElementById('githubUsername').value;
+            const token = document.getElementById('githubToken').value;
+            
+            if (!username || !token) {
+                alert('Please enter both username and token');
+                return;
+            }
+            
+            fetch('/api/configure_github', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: username,
+                    token: token
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Error: ' + error.message);
+            });
+        }
+    </script>
+</body>
+</html>

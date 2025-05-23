@@ -1,0 +1,75 @@
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Database files (keep structure, ignore data)
+*.db-journal
+video_studio.db
+
+# Generated content
+outputs/*.mp4
+outputs/*.avi
+outputs/*.mov
+models/*.bin
+models/*.safetensors
+models/*.ckpt
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local configuration
+config.local.json
+.env
+.env.local
+
+# Distribution files
+dist/
+*.zip
+*.tar.gz
+
+# Keep important empty directories
+!outputs/.gitkeep
+!models/.gitkeep

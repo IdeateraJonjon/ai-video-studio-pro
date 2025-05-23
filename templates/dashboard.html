@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional AI Video Studio - Dashboard</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        
+        .navbar .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 3.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+        }
+        
+        .stat-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+        
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 1em;
+            font-weight: 500;
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        .panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .panel-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(45deg, #ffc107, #e0a800);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .action-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .action-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .project-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+        
+        .project-card:hover {
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .project-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .project-description {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+        
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8em;
+            color: #888;
+        }
+        
+        .video-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+        
+        .video-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .video-thumbnail {
+            width: 80px;
+            height: 45px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+        }
+        
+        .video-info {
+            flex: 1;
+        }
+        
+        .video-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .video-meta {
+            font-size: 0.8em;
+            color: #666;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-generating {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-pending {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .status-failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .progress-panel {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            height: 12px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .progress-fill {
+            background: white;
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+        
+        .api-status {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .api-indicator {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .api-active {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid #28a745;
+        }
+        
+        .api-inactive {
+            background: rgba(108, 117, 125, 0.2);
+            color: #6c757d;
+            border: 1px solid #6c757d;
+        }
+        
+        .floating-action {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .floating-action:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                🎬 AI Video Studio Pro
+            </div>
+            <div class="nav-links">
+                <a href="/" class="active">📊 Dashboard</a>
+                <a href="/projects">📁 Projects</a>
+                <a href="/apis">🔗 APIs</a>
+                <a href="/github-config">🐙 GitHub</a>
+                <a href="/system">⚙️ System</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Professional AI Video Studio</h1>
+            <p>Complete video generation platform with database, APIs, and GitHub integration</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🎥</div>
+                <div class="stat-value">{{ recent_videos|length }}</div>
+                <div class="stat-label">Videos Generated</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📁</div>
+                <div class="stat-value">{{ projects|length }}</div>
+                <div class="stat-label">Active Projects</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-value">{{ app_state.generation.queue|length }}</div>
+                <div class="stat-label">In Queue</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔗</div>
+                <div class="stat-value">{{ app_state.apis.values()|selectattr('active')|list|length }}</div>
+                <div class="stat-label">Active APIs</div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <div class="action-card" onclick="window.location.href='/projects'">
+                <div class="action-icon">📁</div>
+                <div><strong>New Project</strong></div>
+                <div style="font-size: 0.9em; color: #666;">Start a new video project</div>
+            </div>
+            <div class="action-card" onclick="showQuickGenerate()">
+                <div class="action-icon">⚡</div>
+                <div><strong>Quick Generate</strong></div>
+                <div style="font-size: 0.9em; color: #666;">Generate single video</div>
+            </div>
+            <div class="action-card" onclick="window.location.href='/apis'">
+                <div class="action-icon">🔗</div>
+                <div><strong>Configure APIs</strong></div>
+                <div style="font-size: 0.9em; color: #666;">Setup HailuoAI, Veo 2</div>
+            </div>
+            <div class="action-card" onclick="window.location.href='/github-config'">
+                <div class="action-icon">🐙</div>
+                <div><strong>GitHub Setup</strong></div>
+                <div style="font-size: 0.9em; color: #666;">Configure sharing</div>
+            </div>
+        </div>
+
+        {% if app_state.generation.running %}
+        <div class="progress-panel">
+            <div class="panel-header">
+                <div class="panel-title">🎬 Generation in Progress</div>
+            </div>
+            <div><strong>Current:</strong> {{ app_state.generation.current_video.title if app_state.generation.current_video else 'Processing...' }}</div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ app_state.generation.progress }}%;"></div>
+            </div>
+            <div>{{ app_state.generation.message }}</div>
+            <div class="api-status">
+                {% for api, status in app_state.apis.items() %}
+                <div class="api-indicator {{ 'api-active' if status.active else 'api-inactive' }}">
+                    {{ api.upper() }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="main-grid">
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">📁 Recent Projects</div>
+                    <a href="/projects" class="btn btn-primary">View All</a>
+                </div>
+                
+                {% if projects %}
+                <div class="project-grid">
+                    {% for project in projects %}
+                    <div class="project-card">
+                        <div class="project-name">{{ project.name }}</div>
+                        <div class="project-description">{{ project.description[:100] }}...</div>
+                        <div class="project-meta">
+                            <span>{{ project.created_at.strftime('%Y-%m-%d') }}</span>
+                            <span class="status-badge status-{{ project.status }}">{{ project.status }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div style="text-align: center; padding: 40px; color: #666;">
+                    <div style="font-size: 3em; margin-bottom: 15px;">📁</div>
+                    <div>No projects yet. Create your first project!</div>
+                    <a href="/projects" class="btn btn-primary" style="margin-top: 15px;">Create Project</a>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">🎥 Recent Videos</div>
+                    <button class="btn btn-success" onclick="showQuickGenerate()">+ Generate</button>
+                </div>
+                
+                {% if recent_videos %}
+                <div style="max-height: 500px; overflow-y: auto;">
+                    {% for video in recent_videos %}
+                    <div class="video-item">
+                        <div class="video-thumbnail">🎬</div>
+                        <div class="video-info">
+                            <div class="video-title">{{ video.title }}</div>
+                            <div class="video-meta">
+                                {{ video.created_at.strftime('%Y-%m-%d %H:%M') }} • 
+                                {{ video.api_provider.upper() }}
+                                {% if video.github_url %}
+                                • <a href="{{ video.github_url }}" target="_blank">GitHub</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="status-badge status-{{ video.status }}">{{ video.status }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div style="text-align: center; padding: 40px; color: #666;">
+                    <div style="font-size: 3em; margin-bottom: 15px;">🎥</div>
+                    <div>No videos generated yet. Start creating!</div>
+                    <button class="btn btn-success" onclick="showQuickGenerate()" style="margin-top: 15px;">
+                        Generate First Video
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="floating-action" onclick="showQuickGenerate()" title="Quick Generate Video">
+        ⚡
+    </div>
+
+    <!-- Quick Generate Modal (will be created with JavaScript) -->
+    <script>
+        function showQuickGenerate() {
+            // Create modal for quick video generation
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.8); z-index: 10000; display: flex;
+                align-items: center; justify-content: center;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 15px; padding: 30px; max-width: 500px; width: 90%;">
+                    <h3 style="margin-bottom: 20px;">⚡ Quick Video Generation</h3>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Title:</label>
+                        <input type="text" id="quickTitle" placeholder="Enter video title" 
+                               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Prompt:</label>
+                        <textarea id="quickPrompt" rows="4" placeholder="Describe your video..." 
+                                  style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; resize: vertical;"></textarea>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">API Provider:</label>
+                        <select id="quickProvider" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                            <option value="local">Local Generation</option>
+                            <option value="hailuoai" ${app_state.apis.hailuoai.active ? '' : 'disabled'}>
+                                HailuoAI ${app_state.apis.hailuoai.active ? '' : '(Not Configured)'}
+                            </option>
+                            <option value="veo2" ${app_state.apis.veo2.active ? '' : 'disabled'}>
+                                Veo 2 ${app_state.apis.veo2.active ? '' : '(Not Configured)'}
+                            </option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="generateQuickVideo()" 
+                                style="flex: 1; padding: 12px; background: linear-gradient(45deg, #28a745, #20c997); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                            Generate Video
+                        </button>
+                        <button onclick="closeModal()" 
+                                style="padding: 12px 20px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            modal.onclick = (e) => {
+                if (e.target === modal) closeModal();
+            };
+            
+            document.body.appendChild(modal);
+            window.currentModal = modal;
+        }
+        
+        function closeModal() {
+            if (window.currentModal) {
+                document.body.removeChild(window.currentModal);
+                window.currentModal = null;
+            }
+        }
+        
+        function generateQuickVideo() {
+            const title = document.getElementById('quickTitle').value;
+            const prompt = document.getElementById('quickPrompt').value;
+            const provider = document.getElementById('quickProvider').value;
+            
+            if (!title || !prompt) {
+                alert('Please enter both title and prompt');
+                return;
+            }
+            
+            fetch('/api/generate_video', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: title,
+                    prompt: prompt,
+                    api_provider: provider,
+                    settings: {
+                        duration: 6,
+                        resolution: '512x512'
+                    }
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Video added to generation queue!');
+                    closeModal();
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Error: ' + error.message);
+            });
+        }
+        
+        // Auto-refresh every 5 seconds if generation is running
+        {% if app_state.generation.running %}
+        setInterval(() => {
+            location.reload();
+        }, 5000);
+        {% endif %}
+    </script>
+</body>
+</html>

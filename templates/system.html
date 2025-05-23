@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Status - AI Video Studio</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        
+        .navbar {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        
+        .navbar .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .system-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .system-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .card-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .metric-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .metric-value {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .metric-bar {
+            flex: 1;
+            margin: 0 15px;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .metric-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+        
+        .cpu-fill { background: linear-gradient(90deg, #28a745, #20c997); }
+        .memory-fill { background: linear-gradient(90deg, #007bff, #0056b3); }
+        .disk-fill { background: linear-gradient(90deg, #ffc107, #e0a800); }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-good { background: #28a745; }
+        .status-warning { background: #ffc107; }
+        .status-error { background: #dc3545; }
+        
+        .log-container {
+            background: #1a1a1a;
+            color: #00ff00;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+        }
+        
+        .timestamp {
+            color: #888;
+        }
+        
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(45deg, #ffc107, #e0a800);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #dc3545, #c82333);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">AI Video Studio</div>
+            <div class="nav-links">
+                <a href="/">Dashboard</a>
+                <a href="/models">Models</a>
+                <a href="/system" class="active">System</a>
+                <a href="/custom">Custom</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>System Status</h1>
+            <p>Monitor backend configuration and performance</p>
+        </div>
+
+        <div class="system-grid">
+            <div class="system-card">
+                <div class="card-title">
+                    <span class="status-indicator status-good"></span>
+                    System Performance
+                </div>
+                
+                <div class="metric">
+                    <span class="metric-label">CPU Usage</span>
+                    <div class="metric-bar">
+                        <div class="metric-fill cpu-fill" id="cpuBar" style="width: {{ status.system.cpu_percent }}%;"></div>
+                    </div>
+                    <span class="metric-value" id="cpuValue">{{ "%.1f"|format(status.system.cpu_percent) }}%</span>
+                </div>
+                
+                <div class="metric">
+                    <span class="metric-label">Memory Usage</span>
+                    <div class="metric-bar">
+                        <div class="metric-fill memory-fill" id="memoryBar" style="width: {{ status.system.memory_percent }}%;"></div>
+                    </div>
+                    <span class="metric-value" id="memoryValue">{{ "%.1f"|format(status.system.memory_percent) }}%</span>
+                </div>
+                
+                <div class="metric">
+                    <span class="metric-label">Disk Usage</span>
+                    <div class="metric-bar">
+                        <div class="metric-fill disk-fill" id="diskBar" style="width: {{ status.system.disk_usage }}%;"></div>
+                    </div>
+                    <span class="metric-value" id="diskValue">{{ "%.1f"|format(status.system.disk_usage) }}%</span>
+                </div>
+            </div>
+
+            <div class="system-card">
+                <div class="card-title">Hardware Configuration</div>
+                <div class="config-grid">
+                    <div class="config-item">
+                        <span>GPU Support</span>
+                        <span style="color: {{ 'green' if status.system.gpu_available else 'red' }};">
+                            {{ 'Available' if status.system.gpu_available else 'CPU Only' }}
+                        </span>
+                    </div>
+                    <div class="config-item">
+                        <span>PyTorch Version</span>
+                        <span>{{ status.system.torch_version }}</span>
+                    </div>
+                    <div class="config-item">
+                        <span>Python Version</span>
+                        <span>{{ status.system.python_version }}</span>
+                    </div>
+                    <div class="config-item">
+                        <span>Operating System</span>
+                        <span>{{ status.system.os_info[:20] }}...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="system-card">
+                <div class="card-title">Generation Settings</div>
+                <div class="config-grid">
+                    <div class="config-item">
+                        <span>Resolution</span>
+                        <span>{{ status.settings.output_resolution }}</span>
+                    </div>
+                    <div class="config-item">
+                        <span>FPS</span>
+                        <span>{{ status.settings.fps }}</span>
+                    </div>
+                    <div class="config-item">
+                        <span>Duration</span>
+                        <span>{{ status.settings.duration }}s</span>
+                    </div>
+                    <div class="config-item">
+                        <span>Quality Steps</span>
+                        <span>{{ status.settings.inference_steps }}</span>
+                    </div>
+                    <div class="config-item">
+                        <span>Guidance Scale</span>
+                        <span>{{ status.settings.guidance_scale }}</span>
+                    </div>
+                    <div class="config-item">
+                        <span>Output Format</span>
+                        <span>{{ status.settings.output_format.upper() }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="system-card">
+                <div class="card-title">Model Status</div>
+                <div class="config-grid">
+                    <div class="config-item">
+                        <span>Active Model</span>
+                        <span>{{ status.models.active_model or 'None' }}</span>
+                    </div>
+                    <div class="config-item">
+                        <span>Installed Models</span>
+                        <span>{{ status.models.available | selectattr('installed') | list | length }}/{{ status.models.available | length }}</span>
+                    </div>
+                    <div class="config-item">
+                        <span>Downloads Active</span>
+                        <span id="downloadsActive">{{ status.models.available | selectattr('downloading') | list | length }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="system-card">
+            <div class="card-title">System Actions</div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="clearCache()">Clear Model Cache</button>
+                <button class="btn btn-warning" onclick="restartService()">Restart Service</button>
+                <button class="btn btn-danger" onclick="emergencyStop()">Emergency Stop</button>
+            </div>
+        </div>
+
+        <div class="system-card">
+            <div class="card-title">System Logs</div>
+            <div class="log-container" id="systemLogs">
+                <div class="log-entry">
+                    <span class="timestamp">[{{ status.system.current_time or '00:00:00' }}]</span> 
+                    System initialized successfully
+                </div>
+                <div class="log-entry">
+                    <span class="timestamp">[{{ status.system.current_time or '00:00:01' }}]</span> 
+                    Backend configuration loaded
+                </div>
+                <div class="log-entry">
+                    <span class="timestamp">[{{ status.system.current_time or '00:00:02' }}]</span> 
+                    {% if status.system.gpu_available %}
+                    GPU acceleration available
+                    {% else %}
+                    Running in CPU-only mode
+                    {% endif %}
+                </div>
+                <div class="log-entry">
+                    <span class="timestamp">[{{ status.system.current_time or '00:00:03' }}]</span> 
+                    Web interface started on port 5000
+                </div>
+            </div>
+        </div>
+
+        <div class="system-card">
+            <div class="card-title">Backend Configuration</div>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.9em;">
+<pre>{
+  "torch_device": "{{ 'cuda' if status.system.gpu_available else 'cpu' }}",
+  "memory_limit": "auto",
+  "model_cache_dir": "./models/",
+  "output_dir": "./outputs/",
+  "max_concurrent_jobs": 1,
+  "auto_cleanup": true,
+  "logging_level": "INFO",
+  "api_timeout": 300,
+  "model_download_timeout": 3600
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateSystemMetrics() {
+            fetch('/api/status')
+            .then(response => response.json())
+            .then(status => {
+                // Update CPU
+                document.getElementById('cpuBar').style.width = status.system.cpu_percent + '%';
+                document.getElementById('cpuValue').textContent = status.system.cpu_percent.toFixed(1) + '%';
+                
+                // Update Memory
+                document.getElementById('memoryBar').style.width = status.system.memory_percent + '%';
+                document.getElementById('memoryValue').textContent = status.system.memory_percent.toFixed(1) + '%';
+                
+                // Update Disk
+                document.getElementById('diskBar').style.width = status.system.disk_usage + '%';
+                document.getElementById('diskValue').textContent = status.system.disk_usage.toFixed(1) + '%';
+                
+                // Update downloads
+                const downloading = status.models.available.filter(m => m.downloading).length;
+                document.getElementById('downloadsActive').textContent = downloading;
+                
+                // Add log entry if system activity detected
+                if (status.generation.running) {
+                    addLogEntry('Generation in progress: ' + status.generation.message);
+                }
+            })
+            .catch(error => {
+                addLogEntry('Error updating metrics: ' + error.message, 'error');
+            });
+        }
+        
+        function addLogEntry(message, type = 'info') {
+            const logsContainer = document.getElementById('systemLogs');
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="timestamp">[${timestamp}]</span> ${message}`;
+            
+            if (type === 'error') {
+                entry.style.color = '#ff6b6b';
+            } else if (type === 'warning') {
+                entry.style.color = '#ffc107';
+            }
+            
+            logsContainer.appendChild(entry);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+        
+        function clearCache() {
+            if (confirm('Clear model cache? This will free disk space but may slow next generation.')) {
+                fetch('/api/clear_cache', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    addLogEntry('Model cache cleared');
+                    alert(data.message);
+                });
+            }
+        }
+        
+        function restartService() {
+            if (confirm('Restart the generation service? Active jobs will be stopped.')) {
+                fetch('/api/restart_service', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    addLogEntry('Service restarted');
+                    alert(data.message);
+                });
+            }
+        }
+        
+        function emergencyStop() {
+            if (confirm('Emergency stop all operations? This will immediately halt all generation.')) {
+                fetch('/api/emergency_stop', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    addLogEntry('Emergency stop activated', 'warning');
+                    alert(data.message);
+                });
+            }
+        }
+        
+        // Update metrics every 3 seconds
+        setInterval(updateSystemMetrics, 3000);
+        
+        // Initial log entry
+        addLogEntry('System monitoring started');
+    </script>
+</body>
+</html>
